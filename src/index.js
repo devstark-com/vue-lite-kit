@@ -1,13 +1,21 @@
+import Avatar from './components/avatar/'
 import Field from './components/form/field/'
 import Input from './components/form/input/'
 import Table from './components/table/'
 
-// Expose the components
+// Components list
 const components = [
+  Avatar,
   Field,
   Input,
   Table
 ]
+
+// Expose the components
+// const exposed = components.reduce((res, item) => {
+//   res[item.name] = item
+//   return res
+// }, {})
 
 // Install the components
 export function install (Vue, options) {
