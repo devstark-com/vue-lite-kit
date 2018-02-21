@@ -27,7 +27,7 @@
           <slot
             v-for="col in _cols"
             v-if="!col.hidden"
-            :name="'th-' + col.field"
+            :name="'th-' + col.id"
             :col="col"
             :onClick="onThClick"
           >
@@ -71,12 +71,12 @@
           <slot
             v-for="col in _cols"
             v-if="!col.hidden"
-            :name="'td-' + col.field"
+            :name="'td-' + col.id"
             :value="getValue(col, row)"
             :col="col"
             :row="row"
           >
-            <td :key="col.field">{{ getValue(col, row) }}</td>
+            <td :key="col.id">{{ getValue(col, row) }}</td>
           </slot>
         </tr>
       </tbody>
