@@ -18,6 +18,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack --config config/webpack.config.dev.js --progress --watch",
     "build": "npm run build:browser && npm run build:common",
+    "storybook": "start-storybook -p 9001 -c .storybook",
     "build:browser": "cross-env NODE_ENV=production webpack --config config/webpack.config.browser.js --progress --hide-modules",
     "build:common": "cross-env NODE_ENV=production webpack --config config/webpack.config.common.js --progress --hide-modules",
     "prepublish": "npm run build"
@@ -31,6 +32,13 @@
   },
   "homepage": "https://github.com/devstark-com/vue-lite-kit#readme",
   "devDependencies": {
+    "@storybook/addon-actions": "^3.3.15",
+    "@storybook/addon-knobs": "^3.3.15",
+    "@storybook/addon-links": "^3.3.15",
+    "@storybook/addon-notes": "^3.3.15",
+    "@storybook/addon-storysource": "^3.4.0-alpha.8",
+    "@storybook/addon-viewport": "^3.3.15",
+    "@storybook/vue": "^3.3.15",
     "babel-core": "^6.0.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.0.0",
@@ -45,13 +53,20 @@
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
-    "vue-loader": "^10.0.0",
-    "vue-template-compiler": "^2.1.6",
+    "marked": "^0.3.17",
+    "node-sass": "^4.7.2",
+    "sass-loader": "^6.0.7",
+    "style-loader": "^0.20.3",
+    "vue": "^2.5.15",
+    "vue-loader": "^13.3.0",
+    "vue-style-loader": "^4.0.2",
+    "vue-template-compiler": "^2.5.15",
     "webpack": "^2.1.0-beta.28",
     "webpack-merge": "^1.1.2"
   },
   "dependencies": {
     "md5": "^2.2.1",
-    "vue-avatar": "^2.1.1"
+    "vue-avatar": "^2.1.1",
+    "vue-clickaway": "^2.1.0"
   }
 }
