@@ -1,29 +1,85 @@
 <template>
   <div class="vlk-form-control" :class="wrapperClasses">
-    <input
-      class="vlk-input"
-      ref="input"
-      v-if="type !== 'textarea'"
-      v-bind="$attrs"
-      :type="type"
-      :value="internalValue"
-      :maxlength="maxlength"
-      :autocomplete="autocomplete"
-      @input="onInput"
-      @blur="onBlur"
-      @focus="onFocus"
-    />
-    <textarea
-      class="vlk-textarea"
-      ref="textarea"
-      v-else
-      v-bind="$attrs"
-      :value="internalValue"
-      :maxlength="maxlength"
-      @input="onInput"
-      @blur="onBlur"
-      @focus="onFocus"
-    />
+    <slot
+      name="label"
+      v-if="label && labelMode === 'before'"
+      :label="label"
+    >
+      <label class="vlk-label" :for="id">{{ label }}</label>
+    </slot>
+    <label class="vlk-label"
+      v-if="label && labelMode === 'wrapped'"
+      :for="id"
+    >
+      <input
+        class="vlk-input"
+        ref="input"
+        v-if="type !== 'textarea'"
+        v-bind="$attrs"
+        :id="id"
+        :type="type"
+        :value="internalValue"
+        :maxlength="maxlength"
+        :autocomplete="autocomplete"
+        @input="onInput"
+        @blur="onBlur"
+        @focus="onFocus"
+      />
+      <textarea
+        class="vlk-textarea"
+        ref="textarea"
+        v-else
+        v-bind="$attrs"
+        :id="id"
+        :value="internalValue"
+        :maxlength="maxlength"
+        @input="onInput"
+        @blur="onBlur"
+        @focus="onFocus"
+      />
+      <slot
+        name="label"
+        v-if="label && labelMode === 'wrapped'"
+        :label="label"
+      >
+        <span>{{ label }}</span>
+      </slot>
+    </label>
+    <template v-else>
+      <input
+        class="vlk-input"
+        ref="input"
+        v-if="type !== 'textarea'"
+        v-bind="$attrs"
+        :id="id"
+        :type="type"
+        :value="internalValue"
+        :maxlength="maxlength"
+        :autocomplete="autocomplete"
+        @input="onInput"
+        @blur="onBlur"
+        @focus="onFocus"
+      />
+      <textarea
+        class="vlk-textarea"
+        ref="textarea"
+        v-else
+        v-bind="$attrs"
+        :id="id"
+        :value="internalValue"
+        :maxlength="maxlength"
+        @input="onInput"
+        @blur="onBlur"
+        @focus="onFocus"
+      />
+    </template>
+    <slot
+      name="label"
+      v-if="label && labelMode === 'after'"
+      :label="label"
+    >
+      <label class="vlk-label" :for="id">{{ label }}</label>
+    </slot>
   </div>
 </template>
 <script>
@@ -35,10 +91,22 @@ export default {
     mixFormElement
   ],
   props: {
+    id: {
+      type: String,
+      default: null
+    },
     value: [Number, String],
     type: {
       type: String,
       default: 'text'
+    },
+    label: {
+      type: String,
+      default: null
+    },
+    labelMode: {
+      type: String,
+      default: 'before' // can be `before`, `after` or `wrapped`
     },
     wrapperClasses: {
       type: [Array, Object]
