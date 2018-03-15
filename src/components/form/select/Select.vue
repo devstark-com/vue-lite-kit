@@ -2,7 +2,7 @@
   <div
     class="vlk-select"
     :class="{
-      'selected': selectedOption !== '',
+      'selected': selectedOption !== null,
       'opened': opened,
       'closed': !opened
     }"
@@ -27,7 +27,7 @@
         <li
           @click.stop="optionClicked(option.value)"
           :key="option.value"
-          :class="{'current-option': option.value === selectedOption.value }
+          :class="{'current-option': (selectedOption && option.value === selectedOption.value) }
         ">
           {{ option.label }}
         </li>
@@ -58,7 +58,7 @@ export default {
   data () {
     return {
       opened: false,
-      selectedOption: ''
+      selectedOption: null
     }
   },
   watch: {
@@ -89,7 +89,7 @@ export default {
     selectOption (value) {
       const option = this.getOptionByValue(value)
       // if (!option) throw new Error('Option with value "' + value + '" wasn\'t found')
-      if (!option) return Error('Option with value "' + value + '" wasn\'t found')
+      if (!option) return
       this.selectedOption = option
       this.$emit('input', option.value)
     }
