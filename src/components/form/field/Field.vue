@@ -1,12 +1,12 @@
 <template>
-  <div class="bbt-field" :class="fieldClasses">
+  <div class="vlk-field" :class="fieldClasses">
     <label
-      class="bbt-label"
+      class="vlk-label"
       v-if="label"
       :for="labelFor"
     >{{ label }}</label>
     <slot/>
-    <p class="bbt-field-message" v-if="message">{{ message }}</p>
+    <p class="vlk-field-message" v-if="message">{{ message }}</p>
   </div>
 </template>
 <script>

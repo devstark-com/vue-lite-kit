@@ -1,7 +1,7 @@
 <template>
-  <div class="bbt-form-control" :class="wrapperClasses">
+  <div class="vlk-form-control" :class="wrapperClasses">
     <input
-      class="bbt-input"
+      class="vlk-input"
       ref="input"
       v-if="type !== 'textarea'"
       v-bind="$attrs"
@@ -14,7 +14,7 @@
       @focus="onFocus"
     />
     <textarea
-      class="bbt-textarea"
+      class="vlk-textarea"
       ref="textarea"
       v-else
       v-bind="$attrs"
