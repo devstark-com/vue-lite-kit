@@ -1,5 +1,5 @@
 <template>
-  <div class="vlk-form-control" :class="wrapperClasses">
+  <div class="vlk-form-control" :class="rootClasses">
     <slot
       name="label"
       v-if="label && labelMode === 'before'"
@@ -115,6 +115,19 @@ export default {
   data () {
     return {
       internalValue: null
+    }
+  },
+  computed: {
+    rootClasses () {
+      return {
+        ...this.computedClasses,
+        ...this.wrapperClasses
+      }
+    },
+    computedClasses () {
+      let obj = {}
+      if (this.internalValue) obj['not-empty'] = true
+      return obj
     }
   },
   watch: {
