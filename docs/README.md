@@ -5,6 +5,3 @@ There are a lot of awesome products like Element, Buefy, Quasar which provide a 
 Actually, this package provides the same - bunch of UI components, but all of them are easily restyleable or can be style-agnostic at all. Also, we implement API of each component our own way trying to pick the best features and abilities in order to build really flexible UI kit which can be easily used in any project with the custom design.
 
 {% include "./SUMMARY.md" %}
-
-
-
