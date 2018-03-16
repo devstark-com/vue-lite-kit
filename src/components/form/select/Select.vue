@@ -3,14 +3,14 @@
     tabindex="0"
     class="vlk-select"
     :class="{
-      'selected': selectedOption !== null,
+      'selected': !!selectedOption,
       'opened': opened,
       'closed': !opened
     }"
     v-on-clickaway="closeDropdown"
     @click="toggleDropdown"
-    @keydown.up="onArrowUp"
-    @keydown.down="onArrowDown"
+    @keydown.up.prevent="onArrowUp"
+    @keydown.down.prevent="onArrowDown"
     @keydown.enter="onEnter"
     @keydown.tab="onTab"
     @keydown.esc="onEsc"
