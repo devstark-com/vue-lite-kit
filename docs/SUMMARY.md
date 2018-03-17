@@ -2,12 +2,6 @@
 
 * [Introduction](README.md)
 * Forms
-
   * Field
-
   * input
-
-  * [Select](/docs/form/Select.md)
-
-
-
+  * [Select](/form/Select.md)
