@@ -4,7 +4,7 @@ import Input from './components/form/input/'
 import Select from './components/form/select/'
 import Table from './components/table/'
 
-import './main.scss'
+// import './main.scss'
 
 // Components list
 const components = [
