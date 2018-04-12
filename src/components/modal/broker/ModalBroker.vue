@@ -2,6 +2,7 @@
   <Modal
     :class="modalClasses"
     :opened.sync="isModalOpened"
+    :scroll="{body: 'modal-opened'}"
   >
     <component
       v-if="isModalOpened"
