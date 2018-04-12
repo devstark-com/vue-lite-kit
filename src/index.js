@@ -1,6 +1,8 @@
-import Avatar from './components/avatar/'
+// import Avatar from './components/avatar/'
 import Field from './components/form/field/'
 import Input from './components/form/input/'
+import Modal from './components/modal/'
+import ModalBroker from './components/modal/broker/'
 import Select from './components/form/select/'
 import Table from './components/table/'
 
@@ -8,9 +10,11 @@ import Table from './components/table/'
 
 // Components list
 const components = [
-  Avatar,
+  // Avatar,
   Field,
   Input,
+  Modal,
+  ModalBroker,
   Select,
   Table
 ]
