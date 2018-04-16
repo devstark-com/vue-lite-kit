@@ -12,7 +12,7 @@ module.exports = merge(base, {
     filename: outputFile + '.common.js',
     libraryTarget: 'commonjs2',
   },
-  target: 'node',
+  // target: 'node',
   externals: {
     // Put external libraries like lodash here
     // With their package name
