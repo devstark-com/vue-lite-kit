@@ -1,4 +1,7 @@
 // import Avatar from './components/avatar/'
+import config from '@/config/'
+
+// Components
 import Dropdown from './components/dropdown/'
 import Field from './components/form/field/'
 import Input from './components/form/input/'
@@ -6,6 +9,13 @@ import Modal from './components/modal/'
 import ModalBroker from './components/modal/broker/'
 import Select from './components/form/select/'
 import Table from './components/table/'
+
+// Directives
+import tooltipDirective from './components/tooltip/tooltip-directive.js'
+import tooltipContentDirective from './components/tooltip/tooltip-content-directive.js'
+
+//
+import tooltipManager from '@/components/tooltip/manager.js'
 
 // import './main.scss'
 
@@ -21,6 +31,11 @@ const components = [
   Table
 ]
 
+const directives = [
+  tooltipDirective,
+  tooltipContentDirective
+]
+
 // Expose the components
 // const exposed = components.reduce((res, item) => {
 //   res[item.name] = item
@@ -29,14 +44,23 @@ const components = [
 
 // Install the components
 export function install (Vue, options) {
+  config.options = {...config.options, ...options}
+
   const defaultPrefix = 'vlk'
   const prefix = !options ? defaultPrefix : options.cPref || defaultPrefix
   const prefixLc = prefix.toLowerCase()
   const prefixCc = prefixLc.charAt(0).toUpperCase() + prefixLc.slice(1)
+
   components.forEach(component => {
     component.name = prefixCc + component.name
     Vue.component(component.name, component)
   })
+
+  directives.forEach(directive => {
+    Vue.directive(directive.name, directive.directive)
+  })
+
+  Vue.prototype['$tooltips'] = tooltipManager
 }
 
 /* -- Plugin definition & Auto-install -- */
