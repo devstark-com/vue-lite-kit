@@ -51,7 +51,7 @@ export default {
     applyScrollRules (rules) {
       if (typeof window === 'undefined') return
       if (rules.html) document.documentElement.classList.toggle(rules.html, this.opened)
-      if (rules.body) document.body.classList.toggle(rules.html, this.opened)
+      if (rules.body) document.body.classList.toggle(rules.body, this.opened)
     },
 
     checkIsCancelOptionAllowed (option) {
