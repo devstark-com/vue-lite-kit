@@ -18,7 +18,7 @@
         class="vlk-dropdown-content"
         v-show="opened"
       >
-        <slot/>
+        <slot name="content" :vm="vm" />
       </component>
     </transition>
   </component>
@@ -65,6 +65,10 @@ export default {
     }
   },
   computed: {
+    vm () {
+      return this
+    },
+
     wrapperClasses () {
       return {
         'is-disabled': this.disabled,
