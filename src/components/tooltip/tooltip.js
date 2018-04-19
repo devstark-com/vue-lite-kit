@@ -1,8 +1,6 @@
 import Vue from 'vue'
 // import config from '@/config/'
-import manager from './manager.js'
 import EventListener from '@/utils/event-listener.js'
-import updatePosition from './update-position.js'
 import TooltipWrapperComponent from './tooltip-wrapper-component'
 
 const Tooltip = () => {
@@ -13,8 +11,7 @@ const Tooltip = () => {
       trigger: 'hover',
       effect: 'scale',
       placement: 'top',
-      content: null,
-      shift: 0.33
+      content: null
     },
     state: null,
     objTooltip: null,
@@ -80,77 +77,45 @@ const Tooltip = () => {
         this._clickEvent = EventListener.listen(this.target, 'click', this.state.toggle)
       }
 
-      this._wResizeEvent = EventListener.listen(window, 'resize', this.updatePosition.bind(this))
-      this._wScrollEvent = EventListener.listen(window, 'scroll', this.updatePosition.bind(this))
-
       this.state.$on('show', this.add.bind(this))
       this.state.$on('hide', this.remove.bind(this))
     },
 
-    unbindEvents () {
-      this._mouseenterEvent.remove()
-      this._mouseleaveEvent.remove()
-      this._focusEvent.remove()
-      this._blurEvent.remove()
-      this._clickEvent.remove()
-      this._wResizeEvent.remove()
-      this._wScrollEvent.remove()
-
-      this.state.$off('show', this.add.bind(this))
-      this.state.$off('hide', this.remove.bind(this))
-    },
+    // unbindEvents () {
+    //   this._mouseenterEvent.remove()
+    //   this._mouseleaveEvent.remove()
+    //   this._focusEvent.remove()
+    //   this._blurEvent.remove()
+    //   this._clickEvent.remove()
+    //   this._wResizeEvent.remove()
+    //   this._wScrollEvent.remove()
+    //
+    //   this.state.$off('show', this.add.bind(this))
+    //   this.state.$off('hide', this.remove.bind(this))
+    // },
 
     add () {
       this.createTooltip()
       const tooltipEl = document.createElement('div')
       document.body.appendChild(tooltipEl)
       this.objTooltip.$mount(tooltipEl)
-      const contentNode = this.getContentNode()
-      if (contentNode) this.injectContentNode(contentNode)
-      this.updatePosition()
+      // this.updatePosition()
     },
 
     remove () {
-      const contentNode = this.getContentNode()
-      if (contentNode) this.preserveContentNode(contentNode)
       this.destroy()
-    },
-
-    getContentNode () {
-      return manager.getContent(this.options.uid, false)
-    },
-
-    hasContentNode () {
-      return !!this.getContentNode()
-    },
-
-    injectContentNode (node) {
-      this.objTooltip.$el.appendChild(node)
-      node.style.display = 'block'
-    },
-
-    preserveContentNode (node) {
-      node.style.display = 'none'
-      node.parentNode.removeChild(node)
     },
 
     createTooltip () {
       this.destroy()
       this.objTooltip = new TooltipWrapperComponent({
         data: {
-          uid: this.options.content,
-          content: this.options.content,
-          placement: this.options.placement,
-          clickawayCallback: this.state.hide,
-          top: -9999,
-          left: -9999
-          // ...this.options
-          // effect: this.options.effect
+          target: this.target,
+          options: {...this.options},
+          state: this.state
         }
       })
     },
-
-    updatePosition,
 
     update (binding) {
       // @todo update binding values, handle the case when uid is changed in binding

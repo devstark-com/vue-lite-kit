@@ -12,12 +12,14 @@ const directive = {
     if (typeof window === 'undefined') return
     validateBinding(binding)
     manager.addContent(binding.value.uid, el)
-    el.style.display = 'none'
     el.setAttribute(ATTR_NAME, (config.options.tooltipLinkPrefix + binding.value.uid))
   },
 
+  inserted (el, binding) {
+    el.parentNode.removeChild(el)
+  },
+
   unbind (el, binding) {
-    // el.parentNode.removeChild(el)
     manager.removeContent(binding.value.uid)
   }
 }
