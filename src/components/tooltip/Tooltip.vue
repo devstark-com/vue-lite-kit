@@ -1,19 +1,19 @@
 <template>
-  <transition :name="options.effect">
+  <transition :name="state.effect">
     <div
-      class="tooltip"
+      class="vlk-tooltip-wrapper"
       role="tooltip"
       v-on-clickaway="onCLickAway"
       :data-tooltip="dataAttrValue"
-      :class="[options.placement]"
+      :class="[state.placement, state.position]"
       :style="{
         top: top + 'px',
         left: left + 'px'
       }"
     >
-      <div class="tooltip-inner" ref="inner" v-if="customContent"></div>
-      <div class="tooltip-inner" ref="inner" v-else>{{ options.content }}</div>
-      <div class="tooltip-arrow"></div>
+      <div class="vlk-tooltip" ref="inner" v-if="customContent"></div>
+      <div class="vlk-tooltip" ref="inner" v-else>{{ state.content }}</div>
+      <div class="vlk-tooltip-arrow"></div>
     </div>
   </transition>
 </template>
@@ -33,10 +33,6 @@ export default {
     target: {
       required: true
     },
-    options: {
-      type: Object,
-      required: true
-    },
     state: {
       type: Object,
       required: true
@@ -50,17 +46,17 @@ export default {
   },
   computed: {
     dataAttrValue () {
-      return this.options.uid ? (LINK_PREFIX + this.options.uid) : false
+      return this.state.uid ? (LINK_PREFIX + this.state.uid) : false
     },
 
     customContent () {
-      return manager.getContent(this.options.uid, false)
+      return manager.getContent(this.state.uid, false)
     }
   },
   methods: {
     updatePosition,
     onCLickAway () {
-      if (this.options.trigger !== 'click') return
+      if (this.state.trigger !== 'click') return
       this.state.hide()
     }
   },

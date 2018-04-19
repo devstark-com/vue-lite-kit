@@ -1,25 +1,70 @@
-import Vue from 'vue'
-// import config from '@/config/'
+import TooltipState from './tooltip-state.js'
 import EventListener from '@/utils/event-listener.js'
 import TooltipWrapperComponent from './tooltip-wrapper-component'
+
+const parseBinding = (binding) => {
+  let options = {
+    uid: null,
+    trigger: [],
+    placement: null,
+    position: null,
+    content: null,
+    effect: null
+  }
+
+  let data = {
+    ...options,
+    ...binding.value
+  }
+
+  const modifiers = Object.keys(binding.modifiers)
+  if (modifiers.length) {
+    let placements = []
+    let positions = []
+    const placementOptions = ['top', 'right', 'bottom', 'left']
+    const positionOptions = ['start', 'end']
+    const triggerOptions = ['hover', 'click', 'focus']
+
+    placementOptions.forEach(item => {
+      if (modifiers.includes(item)) {
+        placements.push(item)
+        data.placement = item
+      }
+    })
+
+    positionOptions.forEach(item => {
+      if (modifiers.includes(item)) {
+        positions.push(item)
+        data.position = item
+      }
+    })
+
+    triggerOptions.forEach(item => {
+      if (modifiers.includes(item)) {
+        data.trigger.push(item)
+      }
+    })
+
+    if (placements.length > 1) console.warn('Tooltip placement: multiple definition: "' + placements.join(',') + '"')
+    if (positions.length > 1) console.warn('Tooltip position: multiple definition: "' + positions.join(',') + '"')
+  }
+
+  // Set defaults
+  if (!data.trigger.length) data.trigger.push('hover')
+  if (!data.placement) data.placement = 'top'
+  return data
+}
 
 const Tooltip = () => {
   return {
     target: null,
-    options: {
-      uid: null,
-      trigger: 'hover',
-      effect: 'scale',
-      placement: 'top',
-      content: null
-    },
     state: null,
     objTooltip: null,
 
     init (el, binding) {
       this.target = el
-      this._initState()
-      this._updateData(binding)
+      const data = parseBinding(binding)
+      this.initState(data)
       this.bindEvents()
       return this
     },
@@ -28,52 +73,20 @@ const Tooltip = () => {
       this.state.setTargetInserted()
     },
 
-    _initState () {
-      this.state = new Vue({
-        data () {
-          return {
-            targetInserted: false,
-            visible: false
-          }
-        },
-        watch: {
-          visible (val) {
-            const eventName = val ? 'show' : 'hide'
-            this.$emit(eventName)
-          }
-        },
-        methods: {
-          setTargetInserted () {
-            this.targetInserted = true
-          },
-          show () {
-            this.visible = true
-          },
-          hide () {
-            this.visible = false
-          },
-          toggle () {
-            this.visible = !this.visible
-          }
-        }
-      })
-    },
-
-    _updateData (binding) {
-      this.options = {
-        ...this.options,
-        ...binding.value
-      }
+    initState (data) {
+      this.state = new TooltipState({data})
     },
 
     bindEvents () {
-      if (this.options.trigger === 'hover') {
+      if (this.state.trigger.includes('hover')) {
         this._mouseenterEvent = EventListener.listen(this.target, 'mouseenter', this.state.show)
         this._mouseleaveEvent = EventListener.listen(this.target, 'mouseleave', this.state.hide)
-      } else if (this.options.trigger === 'focus') {
+      }
+      if (this.state.trigger.includes('focus')) {
         this._focusEvent = EventListener.listen(this.target, 'focus', this.state.show)
         this._blurEvent = EventListener.listen(this.target, 'blur', this.state.hide)
-      } else {
+      }
+      if (this.state.trigger.includes('click')) {
         this._clickEvent = EventListener.listen(this.target, 'click', this.state.toggle)
       }
 
@@ -99,7 +112,6 @@ const Tooltip = () => {
       const tooltipEl = document.createElement('div')
       document.body.appendChild(tooltipEl)
       this.objTooltip.$mount(tooltipEl)
-      // this.updatePosition()
     },
 
     remove () {
@@ -111,7 +123,7 @@ const Tooltip = () => {
       this.objTooltip = new TooltipWrapperComponent({
         data: {
           target: this.target,
-          options: {...this.options},
+          // options: {...this.options},
           state: this.state
         }
       })

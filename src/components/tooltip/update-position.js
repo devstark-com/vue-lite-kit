@@ -2,10 +2,17 @@ const updatePosition = function () {
   setTimeout(() => {
     const targetRect = this.target.getBoundingClientRect()
     const tooltipRect = this.$el.getBoundingClientRect()
-    switch (this.options.placement) {
+    switch (this.state.placement) {
       case 'top' :
         this.top = (targetRect.top - tooltipRect.height)
-        this.left = (targetRect.left - tooltipRect.width / 2 + targetRect.width / 2)
+        if (this.state.position === 'start') {
+          this.left = targetRect.left
+        } else if (this.state.position === 'end') {
+          const diff = targetRect.width - tooltipRect.width
+          this.left = targetRect.left + diff
+        } else {
+          this.left = (targetRect.left - tooltipRect.width / 2 + targetRect.width / 2)
+        }
         break
       case 'left':
         this.top = (targetRect.top + targetRect.height / 2 - tooltipRect.height / 2)

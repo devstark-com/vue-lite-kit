@@ -8,20 +8,13 @@ const TooltipWrapperComponent = Vue.extend({
   data () {
     return {
       target: null,
-      state: null,
-      options: {
-        uid: null,
-        content: null,
-        placement: 'top',
-        effect: 'fade'
-      }
+      state: null
     }
   },
   render (createElement) {
     return createElement(TooltipComponent, {
       props: {
         target: this.target,
-        options: this.options,
         state: this.state
       }
     })
