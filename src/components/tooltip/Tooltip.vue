@@ -56,7 +56,7 @@ export default {
   methods: {
     updatePosition,
     onCLickAway () {
-      if (this.state.trigger !== 'click') return
+      if (!this.state.trigger.includes('click')) return
       this.state.hide()
     }
   },
