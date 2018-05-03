@@ -60,7 +60,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in rows" :key="row.id">
+        <tr v-for="row in rows" :key="row.id" @click="onRowClicked(row)">
           <td v-if="isSelectionEnabled">
             <q-checkbox
               v-if="isMultiSelect"
@@ -213,6 +213,10 @@ export default {
 
     stateUpdated (noFetch = false) {
       this.$emit('update:state', this.state, noFetch)
+    },
+
+    onRowClicked (row) {
+      this.$emit('row-clicked', row)
     }
   },
   created () {
