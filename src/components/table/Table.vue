@@ -60,7 +60,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in rows" :key="row.id" @click="onRowClicked(row)">
+        <tr
+          v-for="row in rows"
+          :key="row.id"
+          :class="row.rowClasses"
+          @click="onRowClicked(row)"
+        >
           <td v-if="isSelectionEnabled">
             <q-checkbox
               v-if="isMultiSelect"
