@@ -9,6 +9,7 @@ import Modal from './components/modal/'
 import ModalBroker from './components/modal/broker/'
 import Select from './components/form/select/'
 import Table from './components/table/'
+import Upload from './components/form/upload/'
 
 // Directives
 import tooltipDirective from './components/tooltip/tooltip-directive.js'
@@ -28,7 +29,8 @@ const components = [
   Modal,
   ModalBroker,
   Select,
-  Table
+  Table,
+  Upload
 ]
 
 const directives = [
