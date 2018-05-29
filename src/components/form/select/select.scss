@@ -22,11 +22,14 @@
     box-sizing: border-box;
     li {
       padding: 0.5em;
+      border: 1px solid transparent;
       &.selected {
+        border: 1px solid lightgrey;
         background-color: lightgrey;
       }
-      &.curent {
-        background-color: aliceblue;
+      &.current {
+        // background-color: aliceblue;
+        border: 1px dashed grey;
       }
     }
   }
