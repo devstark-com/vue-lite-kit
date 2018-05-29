@@ -91,6 +91,10 @@ export default {
       })
     },
 
+    hasOptions () {
+      return this.optionsList.length > 0
+    },
+
     firstOption () {
       return this.optionsList[0]
     },
@@ -175,6 +179,7 @@ export default {
     },
 
     openDropdown () {
+      if (!this.hasOptions) return
       const currentOptionIndex = this.selectedOptionIndex || 0
       this.setCurrentOption(currentOptionIndex)
       this.opened = true
