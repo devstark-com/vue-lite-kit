@@ -3,7 +3,7 @@
     tabindex="0"
     class="vlk-select"
     :class="{
-      'selected': !!selectedOption,
+      'selected': !!hasSelection,
       'opened': opened,
       'closed': !opened
     }"
@@ -21,7 +21,7 @@
     <div class="vlk-form-control">
       <i class="icon-before"></i>
       <div class="select">
-        <span v-if="selectedOption">{{ selectedOption.label }}</span>
+        <span v-if="hasSelection">{{ !multiselect ? selectedOptionLabel : '(' + selection.length + ') items selected' }}</span>
       </div>
       <i class="icon-after"></i>
     </div>
@@ -33,10 +33,10 @@
         :options="optionsList"
       >
         <li
-          @click.stop="onOptionClicked(option.index)"
+          @click.stop="onOptionClicked(option.value)"
           :key="option.value"
           :class="{
-            'selected': (selectedOption && option.value === selectedOption.value),
+            'selected': (hasSelection && selection.includes(option.value)),
             'current': (currentOption && option.value === currentOption.value)
           }
         ">
@@ -55,7 +55,7 @@ export default {
   ],
   props: {
     value: {
-      type: [String, Number, Object],
+      type: [String, Number, Array],
       default: null
     },
     label: {
@@ -72,13 +72,17 @@ export default {
     selectOnClose: {
       type: Boolean,
       default: false
+    },
+    multiselect: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
       opened: false,
       currentOptionIndex: null,
-      selectedOptionIndex: null
+      selection: []
     }
   },
   computed: {
@@ -95,6 +99,10 @@ export default {
       return this.optionsList.length > 0
     },
 
+    hasSelection () {
+      return this.selection.length > 0
+    },
+
     firstOption () {
       return this.optionsList[0]
     },
@@ -104,8 +112,10 @@ export default {
       return this.optionsList[lastIndex]
     },
 
-    selectedOption () {
-      return this.findOptionByField('index', this.selectedOptionIndex)
+    selectedOptionLabel () {
+      if (this.multiselect) return null
+      const option = this.findOptionByField('value', this.selection[0])
+      return !option ? null : option.label
     },
 
     currentOption () {
@@ -114,7 +124,7 @@ export default {
   },
   watch: {
     value (val, old) {
-      this.setSelectedByValue(val)
+      this.updateSelectionFromValue(val)
     },
 
     optionsList () {
@@ -134,8 +144,8 @@ export default {
 
     onEnter () {
       if (!this.opened) return this.openDropdown()
-      this.selectOption(this.currentOptionIndex)
-      this.closeDropdown()
+      this.handleOptionSelection(this.currentOption.value)
+      if (!this.multiselect) this.closeDropdown()
     },
 
     onTab () {
@@ -155,23 +165,31 @@ export default {
       this.$emit('blur')
     },
 
-    onOptionClicked (index) {
-      this.selectOption(index)
-      this.closeDropdown(true)
+    onOptionClicked (val) {
+      this.handleOptionSelection(val)
+      if (!this.multiselect) this.closeDropdown(true)
     },
 
     prev () {
-      const prevOptionIndex = this.currentOptionIndex - 1
+      const prevOptionIndex = this.currentOption.index - 1
       const prevOption = this.findOptionByField('index', prevOptionIndex)
       const newCurrentOption = prevOption || this.lastOption
       this.setCurrentOption(newCurrentOption.index)
     },
 
     next () {
-      const nextOptionIndex = this.currentOptionIndex + 1
+      const nextOptionIndex = this.currentOption.index + 1
       const nextOption = this.findOptionByField('index', nextOptionIndex)
       const newCurrentOption = nextOption || this.firstOption
       this.setCurrentOption(newCurrentOption.index)
+    },
+
+    getFirstSelectedOptionIndex () {
+      const firstSelectOptionIndex = this.optionsList.findIndex((el, index) => {
+        return this.selection.includes(el.value)
+      })
+
+      return firstSelectOptionIndex < 0 ? 0 : firstSelectOptionIndex
     },
 
     toggleDropdown () {
@@ -180,39 +198,70 @@ export default {
 
     openDropdown () {
       if (!this.hasOptions) return
-      const currentOptionIndex = this.selectedOptionIndex || 0
+      const currentOptionIndex = this.getFirstSelectedOptionIndex()
       this.setCurrentOption(currentOptionIndex)
       this.opened = true
       this.$emit('open')
     },
 
     closeDropdown (preventSelectOnClose = false) {
-      if (this.selectOnClose && !preventSelectOnClose && this.currentOptionIndex !== this.selectedOptionIndex) {
-        this.selectOption(this.currentOptionIndex)
+      if (!this.multiselect) {
+        if (this.selectOnClose &&
+          preventSelectOnClose !== true &&
+          this.currentOption.value !== this.selection[0]
+        ) {
+          this.handleOptionSelection(this.currentOption.value)
+        }
+      } else {
+        this.updateVModel()
       }
+
       this.opened = false
       this.$emit('close')
     },
 
     setCurrentOption (index) {
+      if (this.currentOptionIndex === index) return
       this.currentOptionIndex = index
-      this.$emit('current', this.currentOption.value)
+      const currentOptionValue = this.currentOption ? this.currentOption.value : 0
+      this.$emit('current', currentOptionValue)
     },
 
-    setSelectedByValue (value) {
-      const selectedOption = this.findOptionByField('value', value)
-      if (!selectedOption) return // @todo fire an error
-      this.selectOption(selectedOption.index)
+    updateSelectionFromValue (val) {
+      if (val === null) return
+      this.selection = this.multiselect ? val : [val]
+      this.updateVModel()
     },
 
-    selectOption (index) {
-      const option = this.findOptionByField('index', index)
-      if (!option) {
-        console.warn('Option with index "' + index + '" wasn\'t found')
-        return
+    isSelected (val) {
+      return this.selection.indexOf(val) !== -1
+    },
+
+    handleOptionSelection (val) {
+      if (!this.multiselect) {
+        if (!this.isSelected(val)) {
+          this.selection = [val]
+          this.updateVModel()
+        }
+      } else {
+        this.isSelected(val) ? this.unselectOption(val) : this.selectOption(val)
       }
-      this.selectedOptionIndex = option.index
-      this.$emit('input', option.value)
+    },
+
+    selectOption (val) {
+      if (this.isSelected(val)) throw new Error('Attempt to select already selected value "' + val + '"')
+      this.selection.push(val)
+    },
+
+    unselectOption (val) {
+      if (!this.isSelected(val)) throw new Error('Attempt to unselect not selected value "' + val + '"')
+      const indexToRemove = this.selection.indexOf(val)
+      this.selection.splice(indexToRemove, 1)
+    },
+
+    updateVModel () {
+      const inputPayload = this.multiselect ? this.selection : this.selection[0]
+      this.$emit('input', inputPayload)
     },
 
     findOptionByField (fieldName, value) {
@@ -222,7 +271,7 @@ export default {
     }
   },
   created () {
-    this.setSelectedByValue(this.value)
+    this.updateSelectionFromValue(this.value)
   }
 }
 </script>
