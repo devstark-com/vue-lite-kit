@@ -31,6 +31,9 @@
         v-for="option in optionsList"
         :option="option"
         :options="optionsList"
+        :onClick="onOptionClicked"
+        :selected="hasSelection && selection.includes(option.value)"
+        :current="currentOption && option.value === currentOption.value"
       >
         <li
           @click.stop="onOptionClicked(option.value)"
