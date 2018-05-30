@@ -21,7 +21,7 @@
     <div class="vlk-form-control">
       <i class="icon-before"></i>
       <div class="select">
-        <span v-if="hasSelection">{{ !multiselect ? selectedOptionLabel : '(' + selection.length + ') items selected' }}</span>
+        <span v-if="hasSelection">{{ !multi ? selectedOptionLabel : '(' + selection.length + ') items selected' }}</span>
       </div>
       <i class="icon-after"></i>
     </div>
@@ -48,6 +48,11 @@
 </template>
 <script>
 import { mixin as mixClickAway } from 'vue-clickaway'
+
+const isDiff = (a, b) => {
+  return !Array.isArray(b) || a.some(item => !b.includes(item)) || b.some(item => !a.includes(item))
+}
+
 export default {
   name: 'Select',
   mixins: [
@@ -73,7 +78,11 @@ export default {
       type: Boolean,
       default: false
     },
-    multiselect: {
+    multi: {
+      type: Boolean,
+      default: false
+    },
+    instantUpdate: {
       type: Boolean,
       default: false
     }
@@ -113,7 +122,7 @@ export default {
     },
 
     selectedOptionLabel () {
-      if (this.multiselect) return null
+      if (this.multi) return null
       const option = this.findOptionByField('value', this.selection[0])
       return !option ? null : option.label
     },
@@ -145,7 +154,7 @@ export default {
     onEnter () {
       if (!this.opened) return this.openDropdown()
       this.handleOptionSelection(this.currentOption.value)
-      if (!this.multiselect) this.closeDropdown()
+      if (!this.multi) this.closeDropdown()
     },
 
     onTab () {
@@ -167,7 +176,7 @@ export default {
 
     onOptionClicked (val) {
       this.handleOptionSelection(val)
-      if (!this.multiselect) this.closeDropdown(true)
+      if (!this.multi) this.closeDropdown(true)
     },
 
     prev () {
@@ -205,14 +214,14 @@ export default {
     },
 
     closeDropdown (preventSelectOnClose = false) {
-      if (!this.multiselect) {
+      if (!this.multi) {
         if (this.selectOnClose &&
           preventSelectOnClose !== true &&
           this.currentOption.value !== this.selection[0]
         ) {
           this.handleOptionSelection(this.currentOption.value)
         }
-      } else {
+      } else if (!this.instantUpdate) {
         this.updateVModel()
       }
 
@@ -229,8 +238,7 @@ export default {
 
     updateSelectionFromValue (val) {
       if (val === null) return
-      this.selection = this.multiselect ? val : [val]
-      this.updateVModel()
+      this.selection = this.multi ? [...val] : [val]
     },
 
     isSelected (val) {
@@ -238,13 +246,14 @@ export default {
     },
 
     handleOptionSelection (val) {
-      if (!this.multiselect) {
+      if (!this.multi) {
         if (!this.isSelected(val)) {
           this.selection = [val]
           this.updateVModel()
         }
       } else {
         this.isSelected(val) ? this.unselectOption(val) : this.selectOption(val)
+        if (this.instantUpdate) this.updateVModel()
       }
     },
 
@@ -259,9 +268,15 @@ export default {
       this.selection.splice(indexToRemove, 1)
     },
 
+    isSelectionChanged (newValue) {
+      if (!this.multi) return newValue !== this.value
+      return isDiff(newValue, this.value)
+    },
+
     updateVModel () {
-      const inputPayload = this.multiselect ? this.selection : this.selection[0]
-      this.$emit('input', inputPayload)
+      const newValue = this.multi ? this.selection : this.selection[0]
+      if (!this.isSelectionChanged(newValue)) return
+      this.$emit('input', newValue)
     },
 
     findOptionByField (fieldName, value) {
