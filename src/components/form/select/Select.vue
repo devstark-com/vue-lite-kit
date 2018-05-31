@@ -18,13 +18,23 @@
     @blur="onBlur"
   >
     <label v-if="label">{{ label }}</label>
-    <div class="vlk-form-control">
-      <i class="icon-before"></i>
-      <div class="select">
-        <span v-if="hasSelection">{{ formatSelectedOptions(selection, optionsList, multi, opened) }}</span>
+    <slot
+      name="selected"
+      :selection="selection"
+      :options="optionsList"
+      :is-multi="multi"
+      :is-opened="opened"
+      :has-selection="hasSelection"
+      :formatter="formatSelectedOptions"
+    >
+      <div class="vlk-form-control">
+        <i class="icon-before"></i>
+        <div class="select">
+          <span v-if="hasSelection">{{ formatSelectedOptions(selection, optionsList, multi, opened) }}</span>
+        </div>
+        <i class="icon-after"></i>
       </div>
-      <i class="icon-after"></i>
-    </div>
+    </slot>
     <ul class="vlk-options" v-if="opened">
       <slot
         name="option"
