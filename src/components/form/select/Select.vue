@@ -21,7 +21,7 @@
     <div class="vlk-form-control">
       <i class="icon-before"></i>
       <div class="select">
-        <span v-if="hasSelection">{{ !multi ? selectedOptionLabel : '(' + selection.length + ') items selected' }}</span>
+        <span v-if="hasSelection">{{ formatSelectedOptions(selection, optionsList, multi, opened) }}</span>
       </div>
       <i class="icon-after"></i>
     </div>
@@ -88,6 +88,19 @@ export default {
     instantUpdate: {
       type: Boolean,
       default: false
+    },
+    formatSelectedOptions: {
+      type: Function,
+      default: (selectedValues, options, isMulti, isOpened) => {
+        const len = selectedValues.length
+        if (len === 0) return null
+        if (len === 1) {
+          return options.find(opt => {
+            return opt.value === selectedValues[0]
+          }).label
+        }
+        return '(' + len + ') items selected'
+      }
     }
   },
   data () {
