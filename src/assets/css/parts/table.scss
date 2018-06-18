@@ -3,19 +3,38 @@
     border-collapse: collapse;
     table-layout: auto;
     width: 100%;
-    text-align: center;
+    text-align: left;
     thead {
       tr {
         th {
           background-color: $theme-grey;
-          padding: 10px;
+          padding: 10px 20px;
+          cursor: pointer;
+          &.sorted {
+            position: relative;
+            &:before {
+              content: '';
+              position: absolute;
+              top: 50%;
+              left: 0;
+              width: 20px;
+              text-align: center;
+              transform: translate(0, -50%);
+            }
+            &.asc:before {
+              content: '\2191';
+            }
+            &.desc:before {
+              content: '\2193';
+            }
+          }
         }
       }
     }
     tbody {
       tr {
         td {
-          padding: 10px;
+          padding: 10px 20px;
         }
         &:nth-child(even) {
           td {
