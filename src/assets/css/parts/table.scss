@@ -1,0 +1,28 @@
+.vlk-table {
+  table {
+    border-collapse: collapse;
+    table-layout: auto;
+    width: 100%;
+    text-align: center;
+    thead {
+      tr {
+        th {
+          background-color: $theme-grey;
+          padding: 10px;
+        }
+      }
+    }
+    tbody {
+      tr {
+        td {
+          padding: 10px;
+        }
+        &:nth-child(even) {
+          td {
+            background-color: $theme-light-grey;
+          }
+        }
+      }
+    }
+  }
+}

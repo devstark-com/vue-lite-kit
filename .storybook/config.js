@@ -6,9 +6,11 @@
  */
 
 import { configure } from '@storybook/vue'
-// import '@/assets/css/main.scss'
+import '../src/assets/css/main.scss'
 
 import marked from 'marked'
+
+
 
 const loadStories = () => {
   const req = require.context('../src', true, /\.stories\.js$/)

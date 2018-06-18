@@ -12,7 +12,7 @@ stories.addDecorator(withKnobs)
 stories.add('default usage', (
   withNotes(marked(`
 ~~~
-<Select :options="options" />
+<Select :options="options" label="Label"/>
 ~~~
   `))
 )(
@@ -30,7 +30,7 @@ stories.add('default usage', (
           ]
         }
       },
-      template: `<Select :options="options" />`
+      template: `<Select :options="options" label="Label"/>`
     }
   }
 ))

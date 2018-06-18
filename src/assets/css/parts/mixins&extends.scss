@@ -1,0 +1,50 @@
+%pseudo {
+  content: '';
+  position: absolute;
+  display: block;
+}
+%input_reset {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  -webkit-appearance: none;
+  &:hover,
+  &:active,
+  &:focus,
+  &:visited {
+    outline: none;
+  }
+}
+%list_reset {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+%link_reset {
+  text-decoration: none;
+  color: inherit;
+  &:hover,
+  &:active,
+  &:focus,
+  &:visited {
+    text-decoration: none;
+  }
+}
+%button_reset {
+  cursor: pointer;
+  -webkit-appearance: none;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  &:hover,
+  &:active,
+  &:focus,
+  &:visited {
+    outline: none;
+  }
+  &:disabled {
+    cursor: default;
+  }
+}
